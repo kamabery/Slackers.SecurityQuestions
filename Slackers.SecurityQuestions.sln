@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slackers.Repository", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slackers.Repository.LiteDb", "src\Slackers.Repository.LiteDb\Slackers.Repository.LiteDb.csproj", "{D605B3AC-259C-4785-9A32-CAA52C7ECA67}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slackers.Logging", "src\Slackers.Logging\Slackers.Logging.csproj", "{FA19C91C-2BA4-436E-97F2-822FE4ACAF5A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,10 +35,6 @@ Global
 		{D605B3AC-259C-4785-9A32-CAA52C7ECA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D605B3AC-259C-4785-9A32-CAA52C7ECA67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D605B3AC-259C-4785-9A32-CAA52C7ECA67}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA19C91C-2BA4-436E-97F2-822FE4ACAF5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA19C91C-2BA4-436E-97F2-822FE4ACAF5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA19C91C-2BA4-436E-97F2-822FE4ACAF5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA19C91C-2BA4-436E-97F2-822FE4ACAF5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,7 +44,6 @@ Global
 		{B90CB577-475F-4C96-A973-AB0D454161A4} = {1DADC930-FD2B-461B-87B1-1D6C91AA9F6B}
 		{CE07F34E-AB2E-4DD5-935D-487CCF993C86} = {1DADC930-FD2B-461B-87B1-1D6C91AA9F6B}
 		{D605B3AC-259C-4785-9A32-CAA52C7ECA67} = {1DADC930-FD2B-461B-87B1-1D6C91AA9F6B}
-		{FA19C91C-2BA4-436E-97F2-822FE4ACAF5A} = {1DADC930-FD2B-461B-87B1-1D6C91AA9F6B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5BAFC427-6795-4790-BBCB-3D9C5B7AE973}
