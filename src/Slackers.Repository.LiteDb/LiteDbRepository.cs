@@ -1,19 +1,26 @@
 ﻿using System.Linq.Expressions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Slackers.Repository.LiteDb;
 
+/// <summary>
+/// An implementation for IRepository specifically for LiteDb
+/// </summary>
 public class LiteDbRepository : IRepository
 {
-    private readonly ILogger<LiteDbRepository> _logger;
     private readonly string? _connectionString;
 
-    public LiteDbRepository(IOptions<SqlLiteRepositoryOptions> options, ILogger<LiteDbRepository> logger)
+    /// <summary>
+    /// Creates an instance of <see cref="LiteDbRepository"/>
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="logger"></param>
+    public LiteDbRepository(IOptions<SqlLiteRepositoryOptions> options)
     {
-        _logger = logger;
         _connectionString = options.Value.ConnectionString;
     }
+
+    /// <inheritdoc />
     public RepositoryMessage<T> Post<T>(T model) where T : IEntity
     {
         try
@@ -23,12 +30,13 @@ public class LiteDbRepository : IRepository
         }
         catch (Exception e)
         {
-            return LogErrorAndReturn<T>(e);
+            return new RepositoryMessage<T> { Message = e.Message, Response = RepositoryResponse.Error, Exception = e };
         }
 
         return new RepositoryMessage<T> { Response = RepositoryResponse.Created, Model = model };
     }
 
+    /// <inheritdoc />
     public RepositoryMessage<T> Get<T>(Expression<Func<T, bool>> predicate) where T : IEntity
     {
         try
@@ -45,11 +53,13 @@ public class LiteDbRepository : IRepository
         }
         catch (Exception e)
         {
-            return LogErrorAndReturn<T>(e);
+            return  new RepositoryMessage<T> { Message = e.Message, Response = RepositoryResponse.Error, Exception = e };
+
         }
 
     }
 
+    /// <inheritdoc />
     public RepositoryMessage<T> Get<T>() where T : IEntity
     {
         using var db = new LiteDB.LiteRepository(_connectionString);
@@ -60,12 +70,6 @@ public class LiteDbRepository : IRepository
         }
 
         return new RepositoryMessage<T> { Message = "Ok", Results = result, Response = RepositoryResponse.Ok };
-    }
-
-    private RepositoryMessage<T> LogErrorAndReturn<T>(Exception exception)
-    {
-        _logger.LogError(exception: exception, message: exception.Message);
-        return new RepositoryMessage<T> { Message = exception.Message, Response = RepositoryResponse.Error, Exception = exception };
     }
 
 }

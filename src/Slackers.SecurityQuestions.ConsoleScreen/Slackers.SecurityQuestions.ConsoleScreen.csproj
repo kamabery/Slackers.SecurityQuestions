@@ -7,17 +7,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="ConsoleMenu-simple" Version="2.4.3" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Slackers.HostedConsole\Slackers.HostedConsole.csproj" />
+    <ProjectReference Include="..\Slackers.Logging\Slackers.Logging.csproj" />
     <ProjectReference Include="..\Slackers.Repository.LiteDb\Slackers.Repository.LiteDb.csproj" />
     <ProjectReference Include="..\Slackers.Security\Slackers.SecurityQuestions.Security.csproj" />
   </ItemGroup>
