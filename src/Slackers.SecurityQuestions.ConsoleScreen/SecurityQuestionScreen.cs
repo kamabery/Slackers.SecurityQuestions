@@ -23,15 +23,21 @@ public class SecurityQuestionScreen : IConsoleScreen
         ILogger<SecurityQuestionScreen> logger, 
         IFlowIoService flowIoService, 
         IStateService<SecurityScreenState> stateService,
-        IQuestionsService questionsService,
-        IEnumerable<IFlow<SecurityScreenState>> flows)
+        IQuestionsService questionsService)
     {
         _logger = logger;
         _flowIoService = flowIoService;
         _questionsService = questionsService;
-        _flows = flows;
-        
-        _securityScreenState = stateService.GetState();
+        _flows = new List<IFlow<SecurityScreenState>>
+        {
+            // This could be done via IOC however that makes the integration test more brittle
+            new MainFlow(_flowIoService, stateService, logger),
+            new AnswerFlow(flowIoService, stateService, logger),
+            new AnswerAttemptFlow(_flowIoService, stateService, logger),
+            new SelectAnswerFlow(flowIoService, stateService, logger),
+            new SelectQuestionFlow(flowIoService, stateService),
+            new StoreFlow(flowIoService, stateService)
+        };
     }
 
     public string Title => "Security Questions";
@@ -39,10 +45,13 @@ public class SecurityQuestionScreen : IConsoleScreen
     public void Show()
     {
         if (!_questionsService.LoadSecurityQuestions()) return;
-        ShowNextFlow<SecurityQuestionScreen>("MainFlow");
+        ShowNextFlow<SecurityQuestionScreen, SecurityScreenState>(
+            _flows,
+            SecurityQuestionFlows.MainFlow, 
+            SecurityQuestionFlows.Quit);
     }
 
-    public void ShowNextFlow<T>(string flowName)
+    public void ShowNextFlow<T,TT>(IEnumerable<IFlow<TT>> flows, string flowName, string finalFlow)
     {
         try
         {
@@ -51,27 +60,25 @@ public class SecurityQuestionScreen : IConsoleScreen
             {
                 string error = $"Sorry flow {flowName} not found";
                 _flowIoService.WriteLine(error);
-                _logger.LogEventError(new Exception(error), _securityScreenState.GetLoggingContext());
+                _logger.LogError(error);
                 return;
             }
             
             flow.NextFlow = string.Empty;
-            _securityScreenState.FlowExecuted(flowName);
+            // state.FlowExecuted(flowName);
             flow.Run();
-            if (flow.NextFlow == SecurityQuestionFlows.Quit.ToString())
+            if (flow.NextFlow == finalFlow)
             {
-                _logger.LogEvent("Application Finished.", _securityScreenState.GetLoggingContext());
-                _flowIoService.WriteLine("Press Any Key to close");
                 return;
             }
 
             if (flow.NextFlow == string.Empty)
             {
-                _logger.LogEventError(new Exception("Invalid Flow"), _securityScreenState.GetLoggingContext());
+                _logger.LogError("Invalid Flow");
+                return;
             }
 
-            ShowNextFlow<T>(flow.NextFlow);
-
+            ShowNextFlow<T,TT>(flows, flow.NextFlow, finalFlow);
         }
         catch (Exception e)
         {

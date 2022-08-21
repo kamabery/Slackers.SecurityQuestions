@@ -15,9 +15,9 @@ public class SelectAnswerFlow : IFlow<SecurityScreenState>
 
   
     public SelectAnswerFlow(
-        ILogger<SecurityQuestionScreen> logger,
         IFlowIoService flowIoService,
-        IStateService<SecurityScreenState> stateService)
+        IStateService<SecurityScreenState> stateService,
+        ILogger<SecurityQuestionScreen> logger)
     {
         _logger = logger;
         _flowIoService = flowIoService;
@@ -25,16 +25,17 @@ public class SelectAnswerFlow : IFlow<SecurityScreenState>
         NextFlow = string.Empty;
     }
 
-    public string FlowName => nameof(SelectAnswerFlow);
+    public string FlowName => SecurityQuestionFlows.SelectAnswerFlow;
     public string NextFlow { get; set; } 
     public void Run()
     {
+        _state.FlowExecuted(FlowName);
         _flowIoService.WriteLine("Please Answer");
         var answer = _flowIoService.ReadLine();
         if (string.IsNullOrEmpty(answer))
         {
             _flowIoService.WriteLine("No answer received");
-            NextFlow = SecurityQuestionFlows.SelectQuestionFlow.ToString();
+            NextFlow = SecurityQuestionFlows.SelectQuestionFlow;
             return;
         }
 
@@ -45,7 +46,7 @@ public class SelectAnswerFlow : IFlow<SecurityScreenState>
             var exception = new InvalidOperationException("SelectAnswerFlow in invalid state");
             _logger.LogEventError(exception, _state.GetLoggingContext());
             _flowIoService.WriteLine("An error has occurred");
-            NextFlow = SecurityQuestionFlows.Quit.ToString();
+            NextFlow = SecurityQuestionFlows.Quit;
             return;
         }
 
@@ -58,12 +59,12 @@ public class SelectAnswerFlow : IFlow<SecurityScreenState>
             {
                 _flowIoService.Clear();
                 _state.ResetState();
-                NextFlow = SecurityQuestionFlows.MainFlow.ToString();
+                NextFlow = SecurityQuestionFlows.MainFlow;
                 return;
             }
         }
 
         _flowIoService.Clear();
-       NextFlow = SecurityQuestionFlows.SelectQuestionFlow.ToString();
+       NextFlow = SecurityQuestionFlows.SelectQuestionFlow;
     }
 }

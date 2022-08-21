@@ -13,7 +13,7 @@ public class AnswerAttemptFlow : IFlow<SecurityScreenState>
         private readonly SecurityScreenState _state;
 
         
-        public AnswerAttemptFlow(IStateService<SecurityScreenState> stateService, IFlowIoService flowIoService, ILogger<SecurityQuestionScreen> logger)
+        public AnswerAttemptFlow(IFlowIoService flowIoService, IStateService<SecurityScreenState> stateService, ILogger<SecurityQuestionScreen> logger)
         {
             _flowIoService = flowIoService;
             _logger = logger;
@@ -21,11 +21,12 @@ public class AnswerAttemptFlow : IFlow<SecurityScreenState>
             NextFlow = string.Empty;
     }
 
-        public string FlowName => SecurityQuestionFlows.AnswerAttemptFlow.ToString();
+        public string FlowName => SecurityQuestionFlows.AnswerAttemptFlow;
 
         public string NextFlow { get; set; }
         public void Run()
         {
+            _state.FlowExecuted(FlowName);
             _flowIoService.Clear();
             _flowIoService.WriteLine(_state.CurrentQuestion);
             var answer = _flowIoService.ReadLine();
@@ -51,7 +52,7 @@ public class AnswerAttemptFlow : IFlow<SecurityScreenState>
                 _flowIoService.WriteLine("Press any key to continue");
                 _flowIoService.ReadKey();
                 _flowIoService.Clear();
-                NextFlow = SecurityQuestionFlows.MainFlow.ToString();
+                NextFlow = SecurityQuestionFlows.MainFlow;
                 return;
             }
 
@@ -67,7 +68,7 @@ public class AnswerAttemptFlow : IFlow<SecurityScreenState>
                 _flowIoService.WriteLine("Press any key to continue");
                 _flowIoService.ReadKey();
                 _flowIoService.Clear();
-                NextFlow = SecurityQuestionFlows.MainFlow.ToString();
+                NextFlow = SecurityQuestionFlows.MainFlow;
                 return;
             }
 
@@ -77,7 +78,6 @@ public class AnswerAttemptFlow : IFlow<SecurityScreenState>
             _flowIoService.ReadKey();
             _flowIoService.Clear();
 
-            NextFlow = SecurityQuestionFlows.AnswerFlow.ToString();;
-
+            NextFlow = SecurityQuestionFlows.AnswerFlow;;
         }
     }

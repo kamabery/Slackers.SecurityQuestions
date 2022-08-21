@@ -2,7 +2,6 @@
 using Slackers.HostedConsole;
 using Slackers.Logging;
 using Slackers.Repository;
-using Slackers.SecurityQuestions.ConsoleScreen.Models;
 using Slackers.SecurityQuestions.ConsoleScreen.State;
 
 namespace Slackers.SecurityQuestions.ConsoleScreen.Flows;
@@ -14,7 +13,7 @@ public class MainFlow : IFlow<SecurityScreenState>
     
     
 
-    public MainFlow(ILogger<SecurityQuestionScreen> logger, IFlowIoService flowIoService, IStateService<SecurityScreenState> stateService)
+    public MainFlow(IFlowIoService flowIoService, IStateService<SecurityScreenState> stateService, ILogger<SecurityQuestionScreen> logger)
     {
         _logger = logger;
         _flowIoService = flowIoService;
@@ -22,12 +21,14 @@ public class MainFlow : IFlow<SecurityScreenState>
         NextFlow = string.Empty;
     }
 
-    public string FlowName => nameof(MainFlow);
+    public string FlowName => SecurityQuestionFlows.MainFlow;
    
     public string NextFlow { get; set; }
 
     public void Run()
     {
+        _state.FlowExecuted(FlowName);
+
         //PO Note: there is no Exit described in the flow, but adding it for UX, I can take it out
         _flowIoService.WriteLine("Hi, what is your name?, or type quit to exit");
         string? displayName = string.Empty;
@@ -41,7 +42,7 @@ public class MainFlow : IFlow<SecurityScreenState>
             }
         }
 
-        var quitString = SecurityQuestionFlows.Quit.ToString();
+        var quitString = SecurityQuestionFlows.Quit;
         
         if (displayName.ToUpper() == quitString.ToUpper())
         {
@@ -63,11 +64,11 @@ public class MainFlow : IFlow<SecurityScreenState>
         {
             // New User
             _logger.LogEvent("New User created", _state.GetLoggingContext());
-            NextFlow = SecurityQuestionFlows.StoreFlow.ToString();
+            NextFlow = SecurityQuestionFlows.StoreFlow;
             return;
         }
 
         // Answer attempt flows
-        NextFlow = SecurityQuestionFlows.AnswerFlow.ToString();
+        NextFlow = SecurityQuestionFlows.AnswerFlow;
     }
 }

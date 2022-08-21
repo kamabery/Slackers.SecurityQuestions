@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Slackers.SecurityQuestions.ConsoleScreen.Flows
 {
-    public enum SecurityQuestionFlows
+    public static class SecurityQuestionFlows
     {
-        MainFlow,
-        AnswerFlow,
-        SelectAnswerFlow,
-        AnswerAttemptFlow,
-        StoreFlow,
-        SelectQuestionFlow,
-        Quit
+        public const string MainFlow = nameof(MainFlow);
+        public const string AnswerFlow = nameof(AnswerFlow);
+        public const string SelectAnswerFlow = nameof(SelectAnswerFlow);
+        public const string AnswerAttemptFlow = nameof(AnswerAttemptFlow);
+        public const string StoreFlow = nameof(StoreFlow);
+        public const string SelectQuestionFlow = nameof(SelectQuestionFlow);
+        public const string Quit = nameof(Quit);
     }
 }

@@ -50,6 +50,7 @@ namespace Slackers.SecurityQuestions.ConsoleScreen.State
         public void FlowExecuted(string flowName)
         {
             var execution = new FlowExceution(flowName, DateTime.Now);
+            FlowExecutions.Add(execution);
         }
 
         public RepositoryResponse LoadUserFromRepository(string displayName)
